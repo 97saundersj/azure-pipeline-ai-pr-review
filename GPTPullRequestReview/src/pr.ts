@@ -21,14 +21,29 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
 
   const prUrl = `${tl.getVariable('SYSTEM.TEAMFOUNDATIONCOLLECTIONURI')}${tl.getVariable('SYSTEM.TEAMPROJECTID')}/_apis/git/repositories/${tl.getVariable('Build.Repository.Name')}/pullRequests/${tl.getVariable('System.PullRequest.PullRequestId')}/threads?api-version=5.1`
 
-  await fetch(prUrl, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 'Content-Type': 'application/json' },
-    body: stringifiedBody,
-    agent: httpsAgent
-  });
+  try {
+    const response = await fetch(prUrl, {
+      method: 'POST',
+      headers: { 
+        'Authorization': `Bearer ${tl.getVariable('SYSTEM.ACCESSTOKEN')}`, 
+        'Content-Type': 'application/json' 
+      },
+      body: stringifiedBody,
+      agent: httpsAgent
+    });
 
-  console.log(`New comment added.`, stringifiedBody);
+    const responseData = await response.json();
+    console.log(`Response status: ${response.status}`);
+    console.log(`Response data: ${JSON.stringify(responseData)}`);
+
+    if (response.status !== 200) {
+      throw new Error(`Failed to add comment to PR. Status: ${response.status}, Response: ${JSON.stringify(responseData)}`);
+    }
+
+    console.log(`New comment added successfully.`, stringifiedBody);
+  } catch (error) {
+    console.error('Error adding comment to PR:', error);
+  }
 }
 
 export async function deleteExistingComments(httpsAgent: Agent) {
