@@ -36,7 +36,7 @@ export async function addCommentToPR(fileName: string, comment: string, httpsAge
     console.log(`Response status: ${response.status}`);
     console.log(`Response data: ${JSON.stringify(responseData)}`);
 
-    if (response.status !== 201) {
+    if (response.status !== 200) {
       throw new Error(`Failed to add comment to PR. Status: ${response.status}, Response: ${JSON.stringify(responseData)}`);
     }
 
