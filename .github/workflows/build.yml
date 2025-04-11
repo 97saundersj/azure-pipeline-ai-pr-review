@@ -1,0 +1,46 @@
+name: Build and Package Extension
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        cd GPTPullRequestReview
+        npm install
+        cd ..
+
+    - name: Build TypeScript
+      run: |
+        cd GPTPullRequestReview
+        npm run build
+        cd ..
+
+    - name: Install tfx-cli
+      run: npm install -g tfx-cli
+
+    - name: Package Extension
+      run: tfx extension create --manifest-globs vss-extension.json
+
+    - name: Upload Extension
+      uses: actions/upload-artifact@v3
+      with:
+        name: extension
+        path: "*.vsix"
+        retention-days: 5 

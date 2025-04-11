@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "AIPullRequestReview",
     "name": "AI PR Review",
-    "version": "0.1.10",
+    "version": "0.1.17",
     "publisher": "97Saundersj",
     "galleryFlags": [
         "Public",
