@@ -39,7 +39,7 @@ jobs:
       run: tfx extension create --manifest-globs vss-extension.json
 
     - name: Upload Extension
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: extension
         path: "*.vsix"
