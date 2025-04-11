@@ -20,6 +20,19 @@ jobs:
         node-version: '18'
         cache: 'npm'
 
+    - name: Update version numbers
+      run: |
+        # Get current version from vss-extension.json
+        CURRENT_VERSION=$(node -p "require('./vss-extension.json').version")
+        # Increment patch version
+        NEW_VERSION=$(node -p "const [major, minor, patch] = '$CURRENT_VERSION'.split('.'); [major, minor, parseInt(patch) + 1].join('.')")
+        
+        # Update vss-extension.json
+        node -p "const fs=require('fs'); const pkg=require('./vss-extension.json'); pkg.version='$NEW_VERSION'; fs.writeFileSync('./vss-extension.json', JSON.stringify(pkg, null, 2))"
+        
+        # Update task.json
+        node -p "const fs=require('fs'); const pkg=require('./GPTPullRequestReview/task.json'); pkg.version.Patch='$NEW_VERSION'.split('.')[2]; fs.writeFileSync('./GPTPullRequestReview/task.json', JSON.stringify(pkg, null, 2))"
+
     - name: Install dependencies
       run: |
         cd GPTPullRequestReview
